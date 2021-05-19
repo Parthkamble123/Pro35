@@ -2,6 +2,7 @@ var balloon,balloonImage1,balloonImage2;
 // create database and position variable here
 var database;
 var position;
+var height;
 function preload(){
    bg =loadImage("cityImage.png");
    balloonImage1=loadAnimation("hotairballoon1.png");
@@ -17,11 +18,12 @@ function setup() {
 
   balloon=createSprite(250,450,150,150);
   balloon.addAnimation("hotAirBalloon",balloonImage1);
+  balloon.addAnimation("hotAirBalloon",balloonImage2);
   balloon.scale=0.5;
 
   textSize(20); 
-  var balloonposition=database.ref('balloon/position')
-balloonposition.on("value",readPosition, showError)
+  var balloonposition=database.ref('balloon/height')
+balloonposition.on("value",readHeight, showError)
 }
 
 // function to display UI
@@ -29,20 +31,24 @@ function draw() {
   background(bg);
 
   if(keyDown(LEFT_ARROW)){
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
+    balloon.changeAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in left direction
+    updateHeight(-1,0)
   }
   else if(keyDown(RIGHT_ARROW)){
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
+    balloon.changeAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in right direction
+    updateHeight(1,0)
   }
   else if(keyDown(UP_ARROW)){
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
+    balloon.changeAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in up direction
+    updateHeight(0,-1)
   }
   else if(keyDown(DOWN_ARROW)){
-    balloon.addAnimation("hotAirBalloon",balloonImage2);
+    balloon.changeAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in down direction
+    updateHeight(0,1)
   }
 
   drawSprites();
@@ -59,7 +65,9 @@ database.ref('balloon/height').set({
 }
 
 function readHeight(data){
+  console.log(data)
   height = data.val();
+  console.log(height);
   balloon.x = height.x;
   balloon.y = height.y;
 }
